@@ -18,6 +18,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::group(['prefix' => '/v1'], function() {
-    Route::post('morse', 'MorseController@convertMorseToTextJson');
-    Route::post('text', 'MorseController@convertTextToMorseJson');
+    Route::post('convert', 'MorseController@convert');
 });

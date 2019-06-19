@@ -45,40 +45,45 @@ class MorseController extends Controller
         "8" => "---..",
         "9" => "----.",
 
-        "." => ".-.-.-",
+        //"." => ".-.-.-",
         "," => "--..--",
         "?" => "..--..",
         "'" => ".----.",
         "!" => "-.-.--",
-        "/" => "-..-.",
+        //"/" => "-..-.",
         "(" => "-.--.",
         ")" => "-.--.-",
         "&" => ".-...",
         ":" => "---...",
         ";" => "-.-.-.",
         "=" => "-...-",
-        "-" => "-....-",
+        //"-" => "-....-",
         "_" => "..--.-",
         "\"" => ".-..-.",
         "$" => "...-..-",
-        "@" => ".--.-.",
-
-        "ç" => "-.-.."
+        "@" => ".--.-."
     ];
 
-    function isMorse($text) {
-        $pattern = "/^[.-]{1,5}(?:[ \t]+[.-]{1,5})*(?:[ \t]+[.-]{1,5}(?:[ \t]+[.-]{1,5})*)*$/";
-        return preg_match($pattern, $text);
+    function isMorse($input) {
+        //$pattern = "/^[.-\/ ]+$/";
+        //$pattern = "/^(.|-|\/| )+$/";
+        // $pattern = "/[a-zA-Z]+/";
+        $pattern = "/[a-zA-Z,?'!()&:;=_\"$@]+/";
+        return !preg_match($pattern, $input);
     }
 
-    public function convertMorseToText($morse) {
-        // if (!$this->isMorse($morse))
-        // {
-        //     return $morse;
-        // }
+    public function convert(Request $request) {
+        $input = $request->input;
+        return $this->isMorse($input) ? $this->convertMorseToText($input) : $this->convertTextToMorse($input);
+    }
+
+    public function convertMorseToText($input) {
+        if (strlen(trim($input)) <= 0) {
+            return $input;
+        }
 
         $text = "";
-        $words = explode("/", $morse);
+        $words = explode("/", $input);
         foreach($words as $key => $word)
         {
             $chars = explode(" ", $word);
@@ -90,30 +95,23 @@ class MorseController extends Controller
                     $text .= $letter;
                 } 
             }
-
             $text .= " ";
         }
-
         $text = trim($text);
-        return $text;
-    }
 
-    public function convertMorseToTextJson(Request $request)
-    {
-        $data['morse'] = $request->morse;
-        $data['text'] = $this->convertMorseToText($request->morse);
+        $data['input'] = $input;
+        $data['output'] = $text;
         return response()->json($data);
     }
 
-    public function convertTextToMorse($text) {
-        // if ($this->isMorse($text))
-        // {
-        //     return $text;
-        // }
-        
+    public function convertTextToMorse($input) {
+        if (strlen(trim($input)) <= 0) {
+            return $input;
+        }
+
         $morse = "";
-        $text = strtolower($text);
-        $words = explode(" ", $text);
+        $input = strtolower($input);
+        $words = explode(" ", $input);
         foreach($words as $key => $word)
         {
             $chars = str_split($word);
@@ -126,13 +124,9 @@ class MorseController extends Controller
         }
 
         $morse = substr_replace($morse, "", -3);
-        return $morse;
-    }
-
-    public function convertTextToMorseJson(Request $request) 
-    {
-        $data['text'] = $request->text;
-        $data['morse'] = $this->convertTextToMorse($request->text);
+        
+        $data['input'] = $input;
+        $data['output'] = $morse;
         return response()->json($data);
     }
 }

@@ -1,14 +1,24 @@
-function focusOnLoad()
-{
-     document.getElementById("txt1").focus();
-}
-
-function updateText(morse) {
-    document.getElementById("txt2").value = morse;
+function updateText(input) {
+    $.ajax({
+        url : "/api/v1/convert",
+        type : 'post',
+        data : {
+            input : input,
+        },
+        //beforeSend : function(){
+        //    $("#resultado").html("ENVIANDO...");
+        //}
+    })
+    .done(function(msg) {
+        $("#txt2").val(msg.output);
+    })
+    .fail(function(jqXHR, textStatus, msg) {
+        alert(msg.text);
+    }); 
 }
 
 function copyText() {
-    var text = document.getElementById("txt1");
+    var text = document.getElementById("txt2");
     text.select();
     document.execCommand("copy");
 }
