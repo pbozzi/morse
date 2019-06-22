@@ -14,8 +14,3 @@
 Route::get('/', function () {
     return view('index');
 });
-
-Route::group(['prefix' => '/'], function() {
-    Route::get('/{morse}/text', 'MorseController@convertMorseToText');
-    Route::get('/{text}/morse', 'MorseController@convertTextToMorse');
-});

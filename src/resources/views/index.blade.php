@@ -15,6 +15,7 @@
             <div id="container" class="container">
                 <div class="row text-white">
                     <div class="col-sm-6 offset-sm-3 text-center">
+                        <h1 class="display-5">Morse Code</h1>
                         <h1 class="display-5">-- --- .-. ... . / -.-. --- -.. .</h1>
                         <br>
                         <div class="info-form">
